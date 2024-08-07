@@ -2,6 +2,7 @@
 // import { useSelector } from "react-redux";
 import { MdDelete } from "react-icons/md";
 import { deleteTodo } from "../Store/slice";
+import { addTodo } from "../Store/slice";
 import { useDispatch} from "react-redux";
 import { useState} from "react";
 import { useDrag,useDrop} from "react-dnd";
@@ -13,7 +14,7 @@ const ListContainerdiv = ({ item,type}) => {
   };
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "div",
-    item: {id:dragID,type},
+    item: {id:dragID},
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -21,9 +22,9 @@ const ListContainerdiv = ({ item,type}) => {
 
   const [{ isOver }, drop,] = useDrop(() => ({
     accept: 'div',
-    drop: (item) => console.log(item),
+    drop: (item) => console.log(item,type),
     collect: (monitor) => ({
-        isOver: !!monitor.isOver(),
+        isOver: !!monitor.isOver(), 
     }),
 }))
   return (
