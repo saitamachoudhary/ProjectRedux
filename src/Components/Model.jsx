@@ -6,7 +6,7 @@ import { FaRegWindowClose } from "react-icons/fa";
 const Model = ({ handleModel }) => {
   const [Title, settitle] = useState("");
   const [Message, setmessage] = useState("");
-  const [dropdownvalue, setdropdownvalue] = useState("Type1");
+  const [dropdownvalue, setdropdownvalue] = useState("Todo");
   const dispatch = useDispatch();
   const handlesubmit = (e) => {
     e.preventDefault();
@@ -71,9 +71,9 @@ const Model = ({ handleModel }) => {
             name="Select"
             id=""
           >
-            <option value="Type1">Type1</option>
-            <option value="Type2">Type2</option>
-            <option value="Type3">Type3</option>
+            <option value="Todo">Todo</option>
+            <option value="Progress">Progress</option>
+            <option value="Closed">Closed</option>
           </select>
         </div>
         <button className="p-2 bg-white hover:bg-gray-300" type="submit">

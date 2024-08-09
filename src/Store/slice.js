@@ -5,12 +5,12 @@ export const TodoSlice=createSlice({
     name:'Todo',
     initialState:{
         items:[
-            {id:nanoid(),type:"Type1",childrens:[
+            {id:nanoid(),type:"Todo",childrens:[
                 // {id:nanoid(),title:"Task1",message:"Do task"},
                 // {id:nanoid(),title:"Task2",message:"Do task"},
             ]},
-            {id:nanoid(),type:"Type2",childrens:[]},
-            {id:nanoid(),type:"Type3",childrens:[]},
+            {id:nanoid(),type:"Progress",childrens:[]},
+            {id:nanoid(),type:"Closed",childrens:[]},
         ]
     },
     reducers:{
@@ -20,6 +20,7 @@ export const TodoSlice=createSlice({
           :null})
         },
         deleteTodo: (state, action) => {
+          console.log(action.payload)
             state.items.forEach((item) => {
               if (item.type === action.payload.type) {
                 item.childrens = item.childrens.filter(

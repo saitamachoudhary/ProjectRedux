@@ -27,8 +27,11 @@ function App() {
         </div>
         <div className="sub_div-container w-full h-[80vh] flex items-center justify-around">
           {list.map((item) => (
-            <ListContainerdiv key={item.id} item={item} type={item.type} />
+            <ListContainerdiv key={item.id} item={item.childrens} type={item.type} />
           ))}
+          {/* <ListContainerdiv type="Todo" />
+          <ListContainerdiv type="Progress" />
+          <ListContainerdiv type="Closed"/> */}
         </div>
         {/* <ListContainerdiv/> */}
       </div>
