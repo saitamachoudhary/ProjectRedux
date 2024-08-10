@@ -1,22 +1,20 @@
 /* eslint-disable react/prop-types */
-// import { useSelector } from "react-redux";
 import { MdDelete } from "react-icons/md";
 import { addTodo, deleteTodo } from "../Store/slice";
-// import { addTodo } from "../Store/slice";
-import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useDispatch} from "react-redux";
 import { useDrag, useDrop } from "react-dnd";
 import { nanoid } from "@reduxjs/toolkit";
 
 const Todolist = ({ item, type, index }) => {
-
   const dispatch = useDispatch();
   const handleDelete = (item, itemsID) => {
-    dispatch(deleteTodo({ type: item.type, id: itemsID }));
+    dispatch(deleteTodo({ type: type,id: itemsID }));
   };
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "div",
-    item: {type:type,item:item},
+    item: {type:type,item:item,deleteDragTodo:()=>{
+      dispatch(deleteTodo({type:type,id:item.id}))
+    }},
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -39,20 +37,15 @@ const Todolist = ({ item, type, index }) => {
 };
 
 const ListContainerdiv = ({ type,item }) => {
-  // const [dragID, setdragID] = useState(null);
+
   const dispatch = useDispatch();
-  // const item = useSelector(
-  //   (state) =>
-  //     state.TodoReducer.items.find((item) => item.type === type).childrens
-  // );
-  // console.log(item,type)
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "div",
-    drop: ({item}) => {
-      // console.log(item, type);
+    drop: ({item,deleteDragTodo}) => {
+      console.log(item,deleteDragTodo);
       dispatch(addTodo({type:type,id:nanoid(),title:item.title,message:item.message}))
-      // dispatch(deleteTodo(item,item.id))
+      deleteDragTodo()
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
