@@ -1,12 +1,11 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { MdDelete } from "react-icons/md";
-import { addTodo, deleteTodo } from "../Store/slice";
+import {deleteTodo,reorderTodo,moveTodo} from "../Store/slice";
 import { useDispatch } from "react-redux";
 import { useDrag, useDrop } from "react-dnd";
-import { nanoid } from "@reduxjs/toolkit";
 
-const Todolist = ({ item, type, index }) => {
+const Todolist = ({ item, type, index,moveItem}) => {
   const ref=React.useRef();
   const dispatch = useDispatch();
   const handleDelete = (item, itemsID) => {
@@ -29,17 +28,16 @@ const Todolist = ({ item, type, index }) => {
       const hoverClientY=clientOffset.y-hoveBoundingRect.top;
       if(dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return;
       if(dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return;
+      moveItem(dragIndex,hoverIndex);
+      item.index=hoverIndex;
     }
   })
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "div",
     item: {
       type: type,
-      item: item,
+      id: item.id,
       index,
-      deleteDragTodo: () => {
-        dispatch(deleteTodo({ type: type, id: item.id }));
-      },
     },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
@@ -66,22 +64,27 @@ const ListContainerdiv = ({ type, item }) => {
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "div",
-    drop: ({ item, deleteDragTodo }) => {
-      console.log(item, deleteDragTodo);
-      dispatch(
-        addTodo({
-          type: type,
-          id: nanoid(),
-          title: item.title,
-          message: item.message,
-        })
-      );
-      deleteDragTodo();
+    drop: (item) => {
+      if(item.type!==type){
+        dispatch(moveTodo({
+          sourceType:item.type,
+          targetType:type,
+          todoId:item.id
+        }))
+        item.type=type;
+      }
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
   }));
+  const moveItem=(dragIndex,hoverIndex)=>{
+    dispatch(reorderTodo({
+      sourceIndex:dragIndex,
+      destinationIndex:hoverIndex,
+      type:type
+    }))
+  }
 
   return (
     <div
@@ -92,7 +95,7 @@ const ListContainerdiv = ({ type, item }) => {
         <h1 className="text-xl text-center">{type}</h1>
       </div>
       {item.map((Todo, index) => (
-        <Todolist key={Todo.id} index={index} item={Todo} type={type} />
+        <Todolist key={Todo.id} index={index} item={Todo} type={type} moveItem={moveItem} />
       ))}
     </div>
   );

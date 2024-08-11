@@ -12,7 +12,6 @@ const Model = ({ handleModel }) => {
     e.preventDefault();
     dispatch(
       addTodo({
-        id: nanoid(),
         title: Title,
         message: Message,
         type: dropdownvalue,
@@ -20,7 +19,7 @@ const Model = ({ handleModel }) => {
     );
     settitle("");
     setmessage("");
-    setdropdownvalue("");
+    setdropdownvalue("Todo");
   };
   return (
     <div className="absolute p-3 top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] bg-blue-200 w-2/6 rounded-md">
