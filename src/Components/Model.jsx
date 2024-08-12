@@ -22,7 +22,7 @@ const Model = ({ handleModel }) => {
     setdropdownvalue("Todo");
   };
   return (
-    <div className="absolute p-3 top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] bg-blue-200 w-2/6 rounded-md">
+    <div className="absolute p-3 top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] bg-gray-300 w-2/6 rounded-md">
       <div className="flex items-center justify-between">
         <h3 className="text-2xl">Add Your Task</h3>
         <FaRegWindowClose
@@ -75,7 +75,7 @@ const Model = ({ handleModel }) => {
             <option value="Closed">Closed</option>
           </select>
         </div>
-        <button className="p-2 bg-white hover:bg-gray-300" type="submit">
+        <button className="p-2 bg-white hover:bg-blue-500 hover:text-white" type="submit">
           Submit
         </button>
       </form>

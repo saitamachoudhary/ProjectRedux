@@ -1,53 +1,63 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { MdDelete } from "react-icons/md";
-import {deleteTodo,reorderTodo,moveTodo} from "../Store/slice";
+import { deleteTodo, reorderTodo, moveTodo } from "../Store/slice";
 import { useDispatch } from "react-redux";
 import { useDrag, useDrop } from "react-dnd";
 
-const Todolist = ({ item, type, index,moveItem}) => {
-  const ref=React.useRef();
+const ItemTypes = {
+  TODO: "todo",
+};
+
+const Todolist = ({ item, type, index, moveItem }) => {
+  const ref = React.useRef(null);
   const dispatch = useDispatch();
   const handleDelete = (item, itemsID) => {
     dispatch(deleteTodo({ type: type, id: itemsID }));
   };
-  const[,drop]=useDrop({
-    accept:'div',
-    hover(item,monitor){
-      if(!ref.current){
+  const [, drop] = useDrop({
+    accept: ItemTypes.TODO,
+    hover(item, monitor) {
+      if (!ref.current) {
         return;
       }
-      const dragIndex=item.index;
-      const hoverIndex=index
-      if(dragIndex===hoverIndex){
+      const dragIndex = item.index;
+      const hoverIndex = index;
+      if (dragIndex === hoverIndex) {
         return;
       }
-      const hoveBoundingRect=ref.current?.getBoundingClientRect();
-      const hoverMiddleY=(hoveBoundingRect.bottom-hoveBoundingRect.top)/2;
-      const clientOffset=monitor.getClientOffset();
-      const hoverClientY=clientOffset.y-hoveBoundingRect.top;
-      if(dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return;
-      if(dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return;
-      moveItem(dragIndex,hoverIndex);
-      item.index=hoverIndex;
-    }
-  })
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: "div",
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const clientOffset = monitor.getClientOffset();
+      console.log(clientOffset)
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+      moveItem(dragIndex, hoverIndex);
+      item.index = hoverIndex;
+    },
+  });
+  const [, drag] = useDrag(() => ({
+    type: ItemTypes.TODO,
     item: {
       type: type,
       id: item.id,
       index,
     },
     collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
+      isDragging: monitor.isDragging(),
     }),
   }));
-  drag(drop(ref))
+  drag(drop(ref));
   return (
     <div
       ref={ref}
-      className="flex items-center justify-between border-solid border-2 border-gray-50 w-full p-2 hover:bg-[#60A5FA] hover:text-white cursor-pointer"
+      className="border rounded p-2 mb-2 bg-gray-100 flex justify-between items-center"
       key={item.id}
     >
       <div>
@@ -62,40 +72,44 @@ const Todolist = ({ item, type, index,moveItem}) => {
 const ListContainerdiv = ({ type, item }) => {
   const dispatch = useDispatch();
 
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: "div",
+  const [, ref] = useDrop(() => ({
+    accept: ItemTypes.TODO,
     drop: (item) => {
-      if(item.type!==type){
-        dispatch(moveTodo({
-          sourceType:item.type,
-          targetType:type,
-          todoId:item.id
-        }))
-        item.type=type;
+      if (item.type !== type) {
+        dispatch(
+          moveTodo({
+            sourceType: item.type,
+            targetType: type,
+            todoId: item.id,
+          })
+        );
+        item.type = type;
       }
     },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
   }));
-  const moveItem=(dragIndex,hoverIndex)=>{
-    dispatch(reorderTodo({
-      sourceIndex:dragIndex,
-      destinationIndex:hoverIndex,
-      type:type
-    }))
-  }
+  const moveItem = (dragIndex, hoverIndex) => {
+   
+      // dispatch(
+      //   reorderTodo({
+      //     sourceIndex: dragIndex,
+      //     destinationIndex: hoverIndex,
+      //     type: type,
+      //   })
+      // );
+    
+  };
 
   return (
-    <div
-      ref={drop}
-      className="flex flex-col gap-3 p-3 border-solid border-2 bg-gray-200 h-full w-[300px]"
-    >
-      <div className="w-full bg-slate-300 p-2">
-        <h1 className="text-xl text-center">{type}</h1>
-      </div>
+    <div ref={ref} className="border rounded p-4 w-1/3">
+      <h1 className="font-bold text-lg mb-4">{type}</h1>
       {item.map((Todo, index) => (
-        <Todolist key={Todo.id} index={index} item={Todo} type={type} moveItem={moveItem} />
+        <Todolist
+          key={Todo.id}
+          index={index}
+          item={Todo}
+          type={type}
+          moveItem={moveItem}
+        />
       ))}
     </div>
   );

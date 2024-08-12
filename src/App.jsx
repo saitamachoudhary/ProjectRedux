@@ -14,7 +14,7 @@ function App() {
   };
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="ParentComponent min-h-screen w-full flex flex-col items-center justify-center">
+      <div className="ParentComponent min-h-screen w-full flex flex-col items-center justify-start">
         <div className="sub-div flex flex-col items-center justify-center gap-3">
           <h1 className="text-5xl">Todo Lists</h1>
           <button
@@ -25,15 +25,11 @@ function App() {
           </button>
           {Mopen ? <Model handleModel={handleModel} /> : null}
         </div>
-        <div className="sub_div-container w-full h-[80vh] flex items-center justify-around">
+        <div className="sub_div-container w-full flex items-start">
           {list.map((item) => (
             <ListContainerdiv key={item.id} item={item.childrens} type={item.type} />
           ))}
-          {/* <ListContainerdiv type="Todo" />
-          <ListContainerdiv type="Progress" />
-          <ListContainerdiv type="Closed"/> */}
-        </div>
-        {/* <ListContainerdiv/> */}
+           </div>
       </div>
     </DndProvider>
   );
